@@ -8,7 +8,6 @@ matrix:
   - dist: bionic
     os: linux
   - os: osx
-  - os: windows
 language: c
 compiler: gcc
 git:
