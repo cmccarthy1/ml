@@ -1,9 +1,15 @@
+matrix:
+  include:
+  - dist: xenial
+    os: linux
+  - dist: trusty 
+    os: linux
+  - dist: bionic
+    os: linux
+  - os: osx
+  - os: windows
 language: c
-os:
-- linux
-- osx
-git:
-  depth: 1
+compiler: gcc
 
 install:
   # We do this conditionally because it saves us some downloading if the
@@ -55,6 +61,7 @@ deploy:
   skip_cleanup: true
   on:
     tags: true
+    condition: $TRAVIS_OS_NAME = osx || ($TRAVIS_DIST = trusty && $TRAVIS_OS_NAME = linux) 
 jobs:
   include:
     - stage: docker
