@@ -1,5 +1,5 @@
 \l ml.q
-.ml.loadfile`:clust/init.q
+.ml.loadfile`:clust/q/init.q
 .ml.loadfile`:util/init.q
 
 \S 10
