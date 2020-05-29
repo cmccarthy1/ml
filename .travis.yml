@@ -1,15 +1,7 @@
-stage: standalone
-matrix:
-  include:
-  - dist: xenial
-    os: linux
-  - dist: trusty 
-    os: linux
-  - dist: bionic
-    os: linux
-  - os: osx
 language: c
-compiler: gcc
+os:
+- linux
+- osx
 git:
   depth: 1
 
@@ -63,7 +55,6 @@ deploy:
   skip_cleanup: true
   on:
     tags: true
-    condition: $TRAVIS_OS_NAME = osx || ($TRAVIS_DIST = trusty && $TRAVIS_OS_NAME = linux) 
 jobs:
   include:
     - stage: docker
