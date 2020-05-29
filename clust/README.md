@@ -19,15 +19,36 @@ To run the CURE single or centroid algorithms using the C implementation of the 
 __Mac & Linux__:
 
 ```
-make && make install && make clean
+mkdir cmake && cd cmake && make install && make clean
 ```
 
-__Windows__ (within `build`):
+__Windows__:
 
+From a Visual Studio command prompt:
+
+- Create an out-of-source directory for the CMake and object files.
+
+```bash
+mdkir cmake && cd cmake
 ```
-call build.bat
+
+- Generate the VS solution
+
+```bash
+cmake ..
 ```
-**Note**: `build.bat` runs with Visual Studio 2017 and 2019 64 bit. For other versions, please set an environment variable named `VSDIR` pointing to the path of your Visual Studio batch file (vcvars32.bat, vcvars64.bat etc).
+
+- Build the interface DLL and create the installation package into sub-directory `kdnn`
+
+```bash
+MSBuild.exe INSTALL.vcxproj /p:Configuration=Release /:Platform=x64
+```
+
+- Intall the package (copies the shared object to `%QHOME%/w64`)
+
+```bash
+cd mqtt && install.bat
+```
 
 ### Load
 
