@@ -30,7 +30,6 @@ closestPoint:specificRes[.ml.clust.i.closest;`point]
 newTreeRes  :specificRes[.ml.clust.kd.newtree]
 nnRes       :specificRes[.ml.clust.kd.nn]
 
-
 // K-D Tree using C 
 
 // Expected Results
@@ -65,7 +64,6 @@ passingTest[.ml.clust.kd.findleaf;(tree;d2[;4];tree 2);0b;kdRes2]
 passingTest[.ml.clust.kd.findleaf;(tree2;d2[;1];tree2 1);0b;kdRes3]
 passingTest[.ml.clust.kd.findleaf;(tree2;d1[;0];tree2 2);0b;kdRes4]
 
-
 // K-D Tree using q
 
 // Expected Results
@@ -80,14 +78,13 @@ kdRes8:kdKey!(1b;1b;2;1;0#0;0N;0n;0 2)
 passingTest[nnRes`closestPoint;(tree;d1;`edist;0;d2[;2]);1b;2]
 passingTest[nnRes`closestPoint;(tree2;d2;`edist;1 2 3;d1[;1]);1b;0]
 passingTest[nnRes`closestPoint;(tree2;d2;`edist;1 5 2;d1[;3]);1b;3]
-passingTest[nnRes`closestPoint`closestDist;(tree;d1;`mdist;1 2 3 4;d1[;1]);1b;0 2]
+passingTest[nnRes`closestPoint`closestDist;(tree;d1;`mdist;1 2 3 4;d1[;1]);1b;(0;2f)]
 passingTest[nnRes`closestPoint`closestDist;(tree;d1;`mdist;1;7 9f);1b;(4;8f)]
 passingTest[nnRes`closestPoint`closestDist;(tree2;d2;`edist;0;d2[;2]);1b;(2;0f)]
 passingTest[.ml.clust.kd.findleaf;(tree;d1[;1];tree 0);0b;kdRes5]
 passingTest[.ml.clust.kd.findleaf;(tree;d2[;4];tree 2);0b;kdRes6]
 passingTest[.ml.clust.kd.findleaf;(tree2;d2[;1];tree2 1);0b;kdRes7]
 passingTest[.ml.clust.kd.findleaf;(tree2;d1[;0];tree2 2);0b;kdRes8]
-
 
 // K-Means
 
@@ -96,13 +93,11 @@ passingTest[.ml.clust.i.getclust;(d2;`e2dist;flip d2[;1 2 3]);0b;1 0 1 2 2 2 2 2
 passingTest[.ml.clust.i.getclust;(d1;`e2dist;flip d1[;2 3]);0b;0 1 0 1 0]
 passingTest[.ml.clust.i.getclust;(d1;`edist;flip d1[;3 4]);0b;0 0 1 0 1]
 
-
 // DBSCAN
 
 passingTest[.ml.clust.i.nbhood;("f"$d1;`edist;10;4);0b;0 1 2 3]
 passingTest[.ml.clust.i.nbhood;(d2;`e2dist;0.1;1);0b; 0 3]
 passingTest[.ml.clust.i.nbhood;(d2;`edist;0.3;3);0b;0 1]
-
 
 // Affinity Propagation
 
