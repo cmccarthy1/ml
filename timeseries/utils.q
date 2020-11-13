@@ -45,6 +45,27 @@ ts.i.SARMA.model:{[endog;exog;params]
   }
 
 // @private
+// @kind function
+// @category fitUtility
+// @fileoverview GARCH model generation
+// @param endog  {num[]} Endogenous variable (time-series) from which to build a model
+//   this is the target variable from which a value is to be predicted
+// @param params {dict}  parameter sets used to fit the SARMA model
+// @return {dict} dictionary containing all information required to make predictions
+//   using an SARMA based model
+ts.i.GARCH.model:{[endog;params]
+  n:1+max params`p`q;
+  errCoeff:ts.i.estimateErrorCoeffs[endog;();params;n];
+  coeffs:abs ts.i.GARCH.coefficients[endog;errCoeff[`errors]`err;errCoeff`coeffs;params];
+  // update p param if q>p for future prediction
+  params[`p]:max params`p`q;
+  GARCHparams:ts.i.ARMA.parameters[endog;coeffs;params;errCoeff`errors;n];
+  modelKeys:`params`tr_param`p_param`q_param`lags`resid`estresid`pred_dict;
+  modelParams:(coeffs(::;params[`tr]-1)),GARCHparams;
+  modelKeys!modelParams
+  }
+
+// @private
 // @kind function 
 // @category fitUtility
 // @fileoverview Estimate error coefficients
@@ -178,10 +199,98 @@ ts.i.SARMA.coefficients:{[endog;exog;resid;coeff;params]
     ];
   // normal arima vals
   vals:(exog;lagVal;residVal;seasLag;seasResid);
-  params[`norm_mat]:(,'/)m#'vals;
-  optD:`xk`args!(coeff;params);
+  params[`norm_mat]:(,'/)m#'vals; 
   // use optimizer function to improve SARMA coefficients
   .ml.optimize.BFGS[ts.i.SARMA.maxLikelihood;coeff;params;::]`xVals
+  }
+
+// @private
+// @kind function
+// @category fitUtility
+// @fileoverview Estimate coefficients as starting points to calculate the GARCH coeffs
+// @param endog  {num[]} Endogenous variable (time-series) from which to build a model
+//   this is the target variable from which a value is to be predicted
+// @param resid  {num[][]} residual errors estimated using i.estimateErrorCoeffs 
+// @param coeff  {num[][]} Estimated coefficients for ARMA model using OLS
+// @param params {dict} Information on seasonal and non seasonal lags to be accounted for
+// @return {dict} updated optimized coefficients for SARMA model
+ts.i.GARCH.coefficients:{[endog;errors;coeff;params]
+   // Create lagged matrices for the endogenous variable and residual errors
+  endogm:ts.i.lagMatrix[endog ;max params`p`q];
+  resid :ts.i.lagMatrix[errors;params`q];
+  // Collect the data needed for estimation
+  vals:(endogm;resid);
+  // How many data points are required
+  m:neg min raze(count[endog]-params[`p]),count[errors]-params[`q];
+  x:(,'/)m#'vals;
+  // If required add a trend line variable
+  x:1f,'x;
+  y:m#endog;
+  params[`y]:y;
+  params[`x]:x;
+  .ml.optimize.BFGS[ts.i.GARCH.maxLikelihood;coeff;params;::]`xVals
+  }
+
+// @private
+// @kind function
+// @category fitUtility
+// @fileoverview Use maximum likelihood to update coefficients
+// @param endog  {num[]} Endogenous variable (time-series) from which to build a model
+//   this is the target variable from which a value is to be predicted
+// @param coeff  {num[][]} Estimated coefficients for ARMA model using OLS
+// @param lag    {int} Number of lag values to include
+// @return {dict} updated optimized coefficients for ARMA model
+ts.i.ARCH.updCoeffs:{[endog;coeff;lag]
+  // Create lagged matrices for the endogenous variable and residual errors
+  endogm:enlist ts.i.lagMatrix[endog;lag];
+  m:neg count[endog]-lag;
+  x:1f,'(,'/)m#'endogm;
+  y:m#endog;
+  params:`x`y!(x;y);
+  abs .ml.optimize.BFGS[ts.i.ARCH.maxLikelihood;coeff;params;::]`xVals
+  }
+
+// @private
+// @kind function
+// @category fitUtility
+// @fileoverview Calculation of the errors in calculation of the ARCH coefficients 
+// @param params {dict} Parameters required for calculation of ARCH coefficients
+// @param dict   {dict} Additional parameters required in calculation
+// @return {float} returns the square root of the summed, squared errors
+ts.i.ARCH.maxLikelihood:{[coeff;dict]
+  preds:dict[`x] mmu abs coeff;
+  sqrt sum n*n:preds-dict`y
+  }
+
+// @private
+// @kind function
+// @category fitUtility
+// @fileoverview Calculation of the errors in calculation of the GARCH coefficients 
+// @param params {dict} Parameters required for calculation of GARCH coefficients
+// @param dict   {dict} Additional parameters required in calculation
+// @return {float} returns the square root of the summed, squared errors
+ts.i.GARCH.maxLikelihood:{[params;dict]
+  updParams:ts.i.GARCH.preproc[params;dict];
+  preds:dict[`x] mmu updParams;
+  // calculate error
+  sqrt sum n*n:preds-dict`y
+  }
+
+// @private
+// @kind function
+// @category fitUtility
+// @fileoverview Prepare parameters to be used for prediction 
+// @param params {dict} Parameters required for calculation of GARCH coefficients
+// @param dict {dict} Additional parameters required in calculation
+// @return {float} information required for prediction
+ts.i.GARCH.preproc:{[params;dict]
+  params:abs params;
+  trend:first params;
+  pVar:dict[`p]#1_params;
+  qVar:neg[dict`q]#params;
+  m:til max dict`p`q;
+  pVarUpd:(0^pVar[m])+0^qVar[m];
+  trend,pVarUpd,neg qVar
   }
 
 // @private
@@ -256,7 +365,7 @@ ts.i.AR.keyList    :`params`tr_param`exog_param`p_param`lags
 ts.i.ARMA.keyList  :ts.i.AR.keyList,`q_param`resid`estresid`pred_dict
 ts.i.ARIMA.keyList :ts.i.ARMA.keyList,`origd
 ts.i.SARIMA.keyList:ts.i.ARIMA.keyList,`origs`P_param`Q_param
-ts.i.ARCH.keyList  :`params`tr_param`p_param`resid
+ts.i.ARCH.keyList  :`params`tr_param`p_param`lags
 
 // @private
 // @kind function
@@ -317,6 +426,7 @@ ts.i.ARMA.singlePredict:{[params;exog;dict;pvals;estresid]
     ];
   ((1_pvals[0]),pred;pvals[1];pvals[2],pred)
   }
+
 
 // @private
 // @kind function
@@ -462,6 +572,31 @@ ts.i.ARCH.singlePredict:{[params;pvals]
   predict:params[0]+pvals[0] mmu 1_params;
   ((1_pvals 0),predict;pvals[1],predict)
   }
+
+
+// GARCH predict functions
+
+// @private
+// @kind function
+// @category predictUtility
+// @fileoverview predict a single ARCH value
+// @param params   {num[]} model parameters retrieved from initial fit model
+// @param exog     {tab} exogenous variables, are additional variables which
+//   may be accounted for to improve the model
+// @param dict     {dict} additional information which can dictate the behaviour
+//   when making a prediction
+// @param pvals    {num[]} previously predicted values
+// @param estresid {num[]} estimates of the residual errors
+// @return {num[]} information required for the prediction of a set of ARMA values
+ts.i.GARCH.singlePredict:{[params;exog;dict;pvals;estresid]
+  normmat:raze#[neg[dict`p];pvals[0]],pvals[1];
+  updParams:ts.i.GARCH.preproc[params;dict];
+  pred:updParams[0] + normmat mmu 1_updParams;
+  estvals:pvals[0];
+  pvals[1]:(1_pvals[1]),pred-mmu[estresid;estvals];
+  ((1_pvals[0]),pred;pvals[1];pvals[2],pred)
+  }
+
 
 // Akaike Information Criterion
 

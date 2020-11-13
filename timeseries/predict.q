@@ -92,7 +92,21 @@ ts.SARIMA.predict:{[mdl;exog;len]
 // Predict future volatility using an ARCH model
 /. r    > list of predicted values
 ts.ARCH.predict:{[mdl;len]
-  ts.i.dictCheck[mdl;ts.i.ARCH.keyList;"mdl"];
-  // predict and return future values
-  last{x>count y 1}[len;]ts.i.ARCH.singlePredict[mdl`params]/(mdl`resid;())
+  mdl,:enlist[`exog_param]!enlist();
+  ts.AR.predict[mdl;();len]
+  }
+
+// @kind function
+// @category modelPredict
+// @fileoverview Predictions based on a Generalized AutoRegressive Conditional Heteroskedasticity 
+//   model (GARCH)
+// @param mdl  {dict} model parameters returned from fitting of an appropriate model
+// @param len  {integer} number of values to be predicted
+// @return     {float[]} list of predicted values
+// Predict future volatility using an ARCH model
+/. r    > list of predicted values
+ts.GARCH.predict:{[mdl;len]
+  if[()~mdl`q_param;:ts.ARCH.predict[mdl;len]];
+  mdl,:enlist[`exog_param]!enlist();
+  ts.i.predictFunction[mdl;();len;ts.i.GARCH.singlePredict]
   }
