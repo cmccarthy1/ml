@@ -124,13 +124,29 @@ ts.ARCH.fit:{[resid;lags]
   resid:"f"$resid;
   // cast endog to floating value
   sqresid:resid*resid;
-  // Using the resid errorrs calculate coefficients
+  // fit using an AR model
   coeff:ts.i.estimateParams[sqresid;();sqresid;`p`q`tr!lags,0,1b];
-  // Get lagged values needed for future predictions
-  resid:neg[lags]#sqresid;
-  // return dictionary with required info for predictions
-  keyVals:`params`tr_param`p_param`resid;
-  params:(coeff;coeff[0];1_coeff;resid);
-  keyVals!params
+  coeff:ts.i.ARCH.updCoeffs[sqresid;coeff;lags];
+  lagvals:neg[lags]#sqresid;
+  keyvals:`params`tr_param`p_param`lags;
+  params:(coeff;1#coeff;neg[lags]#coeff;lagvals);
+  keyvals!params
   }
 
+// @kind function
+// @category modelFit
+// @fileoverview Fit a Generalized AutoRegressive Conditional Heteroscedasticity model (ARCH)
+// @param resid {num[]} Residual errors from fitted time series model
+// @param lags  {integer} The number/order of time  lags of the model
+// @param error {integer} The number/order of error to account for 
+// @return {dict} All information required to use a fit model for the prediction of
+//   new values based on incoming data
+ts.GARCH.fit:{[resid;lags;error]
+  if[error~0;:ts.ARCH.fit[resid;lags],enlist[`q_param]!enlist ()];
+  // cast to floating value
+  resid:"f"$resid;
+  // cast endog to floating value
+  sqresid:resid*resid;
+  // cast endog to floating value
+  ts.i.GARCH.model[sqresid;`p`q`tr!lags,error,1b]
+  }
