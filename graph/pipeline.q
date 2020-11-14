@@ -18,6 +18,18 @@ createPipeline:{[graph]
 
 execPipeline:{[pipeline]i.execCheck i.execNext/pipeline}
 
+updPipeline:{[pipeline;graph;node;nodeContent]
+  nodeNames:exec nodeId from pipeline;
+  deps:nodeNames!.ml.i.getAllDeps[graph] each nodeNames;
+  anyNodeDep:where any each node=deps;
+  isCfg:any (`symbol$())in exec inputorder from pipeline where nodeId=node;
+  graphFunc:$[isCfg;updCfg;updNode];
+  newGraph:graphFunc[graph;node;nodeContent];
+  newPipeline:select from createPipeline[newGraph] where nodeId in anyNodeDep;
+  oldinputs:exec inputs from pipeline where nodeId=node;
+  updatePipeline:update inputs:oldinputs from newPipeline where nodeId=node;
+  pipeline,updatePipeline
+  }
 
 // Pipeline creation utilities
 i.getDeps:{[graph;node]exec distinct srcNode from graph[`edges]where dstNode=node}
