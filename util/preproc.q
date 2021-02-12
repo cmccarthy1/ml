@@ -41,7 +41,7 @@ minMaxScaler.fit:{[data]
   scalingInfo:`minData`maxData!(minData;maxData);
   returnInfo:enlist[`modelInfo]!enlist scalingInfo;
   predict:i.apUpd minMaxScaler.predict returnInfo;
-  returnInfo,enlist[`predict]!enlist predict
+  returnInfo,`modelName`predict!(`.ml.minMaxScaler;predict)
   }
 
 // @kind function
@@ -86,7 +86,7 @@ stdScaler.fit:{[data]
   scalingInfo:`avgData`devData!(avgData;devData);
   returnInfo:enlist[`modelInfo]!enlist scalingInfo;
   predict:i.apUpd stdScaler.predict returnInfo;
-  returnInfo,enlist[`predict]!enlist predict
+  returnInfo,`modelName`predict!(`.ml.stdScaler;predict)
   }
 
 // @kind function
@@ -181,7 +181,7 @@ oneHot.fit:{[tab;symCols]
   mapDict:symCols!mapVals;
   returnInfo:enlist[`modelInfo]!enlist mapDict;
   predict:oneHot.predict returnInfo;
-  returnInfo,enlist[`predict]!enlist predict
+  returnInfo,`modelName`predict!(`.ml.oneHot.fit;predict)
   }
 
 // @kind function
@@ -247,7 +247,7 @@ lexiEncode.fit:{[tab;symCols]
   mapDict:symCols!mapVals;
   returnInfo:enlist[`modelInfo]!enlist mapDict;
   predict:lexiEncode.predict returnInfo;
-  returnInfo,enlist[`predict]!enlist predict
+  returnInfo,`modelName`predict!(`.ml.lexiEncode;predict)
   }
 
 // @kind function
@@ -296,10 +296,10 @@ lexiEncode.fitPredict:{[tab;symCols]
 labelEncode.fit:{[data]
   uniqueData:asc distinct data;
   map:uniqueData!til count uniqueData;
-  returnInfo:enlist[`modelInfo]!enlist map;
+  returnInfo:enlist[`modelInfo]!enlist(enlist[`modelType]!enlist`labelEncode),map;
   predict:labelEncode.predict returnInfo;
   encoding:uniqueData?data;
-  returnInfo,enlist[`predict]!enlist predict
+  returnInfo,`modelName`predict!(`.ml.labelEncode;predict)
   }
 
 // @kind function

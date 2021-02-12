@@ -20,7 +20,7 @@ stats.OLS.fit:{[endog;exog;trend]
   modelInfo:stats.i.OLSstats[coef;endog;exog;trend];
   returnInfo:enlist[`modelInfo]!enlist modelInfo;
   predict:stats.OLS.predict returnInfo;
-  returnInfo,enlist[`predict]!enlist predict
+  returnInfo,`modelName`predict!(`.ml.stats.OLS;predict)
   }
 
 // @fileOverview Predict values using coefficients calculated via OLS
@@ -74,7 +74,7 @@ stats.WLS.fit:{[endog;exog;weights;trend]
   modelInfo,:enlist[`weights]!enlist weights;
   returnInfo:enlist[`modelInfo]!enlist modelInfo;
   predict:stats.WLS.predict returnInfo;
-  returnInfo,enlist[`predict]!enlist predict
+  returnInfo,`modelName`predict!(`.ml.stats.WLS;predict)
   }
 
 // @fileOverview Predict values using coefficients calculated via WLS

@@ -34,7 +34,7 @@ ts.AR.fit:{[endog;exog;p;trend]
   modelDict:dictKeys!dictVals;
   returnInfo:enlist[`modelInfo]!enlist modelDict;
   predictFunc:ts.AR.predict returnInfo;
-  returnInfo,enlist[`predict]!enlist predictFunc
+  returnInfo,`modelName`predict!(`.ml.ts.AR;predictFunc)
   }
 
 // @kind function
@@ -67,7 +67,7 @@ ts.ARMA.fit:{[endog;exog;p;q;trend]
     ];
   returnInfo:enlist[`modelInfo]!enlist modelDict;
   predictFunc:ts.ARMA.predict returnInfo;
-  returnInfo,enlist[`predict]!enlist predictFunc
+  returnInfo,`modelName`predict!(`.ml.ts.ARMA;predictFunc)
   }
 
 // @kind function
@@ -99,7 +99,7 @@ ts.ARIMA.fit:{[endog;exog;p;d;q;trend]
   modelDict,:originalDiff;
   returnInfo:enlist[`modelInfo]!enlist modelDict;
   predictFunc:ts.ARIMA.predict returnInfo;
-  returnInfo,enlist[`predict]!enlist predictFunc
+  returnInfo,`modelName`predict!(`.ml.ts.ARIMA;predictFunc)
   }
 
 // @kind function
@@ -141,7 +141,7 @@ ts.SARIMA.fit:{[endog;exog;p;d;q;trend;season]
   modelDict:ts.i.SARMA.model[I`final;exog;dict],diffDict;
   returnInfo:enlist[`modelInfo]!enlist modelDict;
   predictFunc:ts.SARIMA.predict returnInfo;
-  returnInfo,enlist[`predict]!enlist predictFunc
+  returnInfo,`modelName`predict!(`.ml.ts.SARIMA;predictFunc)
   }
 
 // @kind function
@@ -169,5 +169,5 @@ ts.ARCH.fit:{[residuals;p]
   modelDict:dictKeys!dictVals;
   returnInfo:enlist[`modelInfo]!enlist modelDict;
   predictFunc:ts.ARCH.predict returnInfo;
-  returnInfo,enlist[`predict]!enlist predictFunc
+  returnInfo,`modelName`predict!(`.ml.ts.ARCH;predictFunc)
   }

@@ -22,7 +22,7 @@ clust.cure.fit:{[data;df;n;c]
   modelInfo:`data`inputs`dgram!(data;`df`n`c!(df;n;c);dgram);
   returnInfo:enlist[`modelInfo]!enlist modelInfo;
   predictFunc:clust.cure.predict returnInfo;
-  returnInfo,enlist[`predict]!enlist predictFunc
+  returnInfo,`modelName`predict!(`.ml.clust.cure;predictFunc)
   }
 
 // @kind function
@@ -50,7 +50,7 @@ clust.hc.fit:{[data;df;lf]
   modelInfo:`data`inputs`dgram!(data;`df`lf!(df;lf);dgram);
   returnInfo:enlist[`modelInfo]!enlist modelInfo;
   predictFunc:clust.hc.predict returnInfo;
-  returnInfo,enlist[`predict]!enlist predictFunc
+  returnInfo,`modelName`predict!(`.ml.clust.hc;predictFunc)
   }
 
 // @kind function

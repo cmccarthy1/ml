@@ -37,7 +37,7 @@ clust.kmeans.fit:{[data;df;k;config]
   returnInfo:enlist[`modelInfo]!enlist modelInfo;
   predictFunc:clust.kmeans.predict returnInfo;
   updFunc:clust.kmeans.update returnInfo;
-  returnInfo,`predict`update!(predictFunc;updFunc)
+  returnInfo,`modelName`predict`update!(`.ml.clust.kmeans;predictFunc;updFunc)
   }
 
 // @kind function
@@ -89,8 +89,9 @@ clust.kmeans.update:{[config;data]
     [modelConfig`data;modelConfig[`inputs]`df;modelConfig`repPts];
   // Return updated config, prediction and update functions
   returnInfo:enlist[`modelInfo]!enlist modelConfig;
-  returnKeys:`predict`update;
-  returnVals:(clust.kmeans.predict returnInfo;
+  returnKeys:`modelName`predict`update;
+  returnVals:(`.ml.clust.kmeans;
+    clust.kmeans.predict returnInfo;
     clust.kmeans.update returnInfo);
   returnInfo,returnKeys!returnVals
   }

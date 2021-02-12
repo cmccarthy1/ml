@@ -26,7 +26,7 @@ clust.ap.fit:{[data;df;damp;diag;iter]
   modelInfo:clust.i.runAp[data;df;damp;diag;til count data 0;updDict];
   returnInfo:enlist[`modelInfo]!enlist modelInfo;
   predictFunc:clust.ap.predict returnInfo;
-  returnInfo,enlist[`predict]!enlist predictFunc
+  returnInfo,`modelName`predict!(`.ml.clust.ap;predictFunc)
   }
 
 // @kind function

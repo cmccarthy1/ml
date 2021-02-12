@@ -34,7 +34,7 @@ clust.dbscan.fit:{[data;df;minPts;eps]
   returnInfo:enlist[`modelInfo]!enlist modelInfo;
   predictFunc:clust.dbscan.predict returnInfo;
   updFunc:clust.dbscan.update returnInfo;
-  returnInfo,`predict`update!(predictFunc;updFunc)
+  returnInfo,`modelName`predict`update!(`.ml.clust.dbscan;predictFunc;updFunc)
   }
 
 // @kind function
@@ -91,8 +91,9 @@ clust.dbscan.update:{[config;data]
   clusts:-1^exec cluster from tab;
   modelConfig,:`data`tab`clust!(modelConfig[`data],'data;tab;clusts);
   returnInfo:enlist[`modelInfo]!enlist modelConfig;
-  returnKeys:`predict`update;
-  returnVals:(clust.dbscan.predict returnInfo;
+  returnKeys:`modelInfo`predict`update;
+  returnVals:(`.ml.clust.dbscan;
+    clust.dbscan.predict returnInfo;
     clust.dbscan.update returnInfo);
   returnInfo,returnKeys!returnVals
   }
