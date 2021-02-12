@@ -296,7 +296,7 @@ lexiEncode.fitPredict:{[tab;symCols]
 labelEncode.fit:{[data]
   uniqueData:asc distinct data;
   map:uniqueData!til count uniqueData;
-  returnInfo:enlist[`modelInfo]!enlist(enlist[`modelType]!enlist`labelEncode),map;
+  returnInfo:enlist[`modelInfo]!enlist map;
   predict:labelEncode.predict returnInfo;
   encoding:uniqueData?data;
   returnInfo,`modelName`predict!(`.ml.labelEncode;predict)
@@ -338,7 +338,7 @@ labelEncode.fitPredict:{[data]
 //   by `map` are returned as null values 
 applyLabelEncode:{[data;map]
   if[99h<>type map;'"Input must be a dictionary"];
-  $[`modelInfo`predict~key map;map[`modelInfo]?;map?]data
+  $[`modelInfo`modelName`predict~key map;map[`modelInfo]?;map?]data
   }
 
 // @kind function

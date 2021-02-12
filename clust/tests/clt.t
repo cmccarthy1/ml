@@ -83,7 +83,7 @@ passingTest[countOutput[.ml.clust.kmeans.fit[d1tts 0;`edist;4;kMeansCfg]`predict
 failingTest[.ml.clust.kmeans.fit[d1tts 0;`e2dist;4;kMeansCfg]`predict;100?`4;1b;"Dataset not suitable for clustering. Must be convertible to floats."]
 
 // Update
-passingTest[algoOutputs[.ml.clust.kmeans.fit[d1tts 0;`edist;4;kMeansCfg]`update];enlist d1tts 1;1b;`modelInfo`predict`update]
+passingTest[algoOutputs[.ml.clust.kmeans.fit[d1tts 0;`edist;4;kMeansCfg]`update];enlist d1tts 1;1b;`modelInfo`modelName`predict`update]
 passingTest[clusterIdxsUpd[.ml.clust.kmeans.fit[d1tts 0;`e2dist;4;kMeansCfg]`update];enlist d1tts 1;1b;d1clt]
 failingTest[.ml.clust.kmeans.update;(()!();1000?`2);0b;"Dataset not suitable for clustering. Must be convertible to floats."]
 
@@ -110,7 +110,7 @@ failingTest[.ml.clust.dbscan.fit[d1tts 0;`e2dist;5;5]`predict;(50?`x`y);1b;"Data
 passingTest[clusterIdxsUpd[.ml.clust.dbscan.fit[d1tts 0;`e2dist;5;5]`update];enlist d1tts 1;1b;d1clt]
 passingTest[clusterIdxsUpd[.ml.clust.dbscan.fit[d1tts 0;`edist;5;5]`update];enlist d1tts 1;1b;d1clt]
 passingTest[clusterIdxsUpd[.ml.clust.dbscan.fit[d1tts 0;`mdist;5;5]`update];enlist d1tts 1;1b;d1clt]
-passingTest[algoOutputs[.ml.clust.dbscan.fit[d1tts 0;`mdist;5;5]`update];enlist d1tts 1;1b;`modelInfo`predict`update]
+passingTest[algoOutputs[.ml.clust.dbscan.fit[d1tts 0;`mdist;5;5]`update];enlist d1tts 1;1b;`modelInfo`modelName`predict`update]
 failingTest[.ml.clust.dbscan.update;(()!();50?`x`y);0b;"Dataset not suitable for clustering. Must be convertible to floats."]
 
 // CURE

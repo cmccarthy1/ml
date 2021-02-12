@@ -91,7 +91,7 @@ clust.dbscan.update:{[config;data]
   clusts:-1^exec cluster from tab;
   modelConfig,:`data`tab`clust!(modelConfig[`data],'data;tab;clusts);
   returnInfo:enlist[`modelInfo]!enlist modelConfig;
-  returnKeys:`modelInfo`predict`update;
+  returnKeys:`modelName`predict`update;
   returnVals:(`.ml.clust.dbscan;
     clust.dbscan.predict returnInfo;
     clust.dbscan.update returnInfo);
